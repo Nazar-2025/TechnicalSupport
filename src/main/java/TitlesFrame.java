@@ -3,10 +3,12 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 public class TitlesFrame extends JFrame {
+   //Initializes UI constructor
    public TitlesFrame() {
       this.initUI();
    }
 
+   //Create user interface method
    private void initUI() {
       this.setTitle("Криві фігури");
       this.setDefaultCloseOperation(3);
@@ -15,6 +17,7 @@ public class TitlesFrame extends JFrame {
       this.setLocationRelativeTo((Component)null);
    }
 
+   //Start program method
    public static void main(String[] args) {
       SwingUtilities.invokeLater(new Runnable() {
          public void run() {
