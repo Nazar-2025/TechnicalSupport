@@ -9,13 +9,43 @@ import java.awt.geom.AffineTransform;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+/**
+ * Class {@code TitlesPanel} generates graphical panel.
+ * Extends {@link JPanel} and implements {@link ActionListener}.
+ *
+ *<p>Draws {@code ShapeFactory}.</p>
+ *
+ * @author Nazar-2025
+ *
+ * @version 1.0
+ */
 public class TitlesPanel extends JPanel implements ActionListener {
+   /**
+    * Main panel graphics of user interface.
+    */
    private Graphics2D g2d;
+   /**
+    * Redrawing process timer.
+    */
    private Timer animation;
+   /**
+    * Indicator for redraw.
+    */
    private boolean is_done = true;
+   /**
+    * Shape angle rotation.
+    */
    private int start_angle = 0;
+   /**
+    * Parameter which depends on shape form and color.
+    */
    private int shape;
 
+   /**
+    * Constructs {@code TitlesPanel} set drawing shape and start animation.
+    *
+    * @param _shape shape type argument.
+    */
    //Start shape rotation animation constructor
    public TitlesPanel(int _shape) {
       this.shape = _shape;
@@ -23,6 +53,10 @@ public class TitlesPanel extends JPanel implements ActionListener {
       this.animation.start();
    }
 
+   /**
+    * Method that start repaint.
+    * @param arg0 (not use).
+    */
    //Repaint rotation shape
    public void actionPerformed(ActionEvent arg0) {
       if (this.is_done) {
@@ -31,6 +65,10 @@ public class TitlesPanel extends JPanel implements ActionListener {
 
    }
 
+   /**
+    * Method that draw various shape.
+    * @param g UI panel graphic.
+    */
    //Drawing various shape method
    private void doDrawing(Graphics g) {
       this.is_done = false;
@@ -62,6 +100,10 @@ public class TitlesPanel extends JPanel implements ActionListener {
       this.is_done = true;
    }
 
+   /**
+    * Method that starts drawing.
+    * @param g graphic for {@code doDrawing} method.
+    */
    //Method that start drawing shape process
    public void paintComponent(Graphics g) {
       super.paintComponent(g);

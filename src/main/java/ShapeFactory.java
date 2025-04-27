@@ -7,13 +7,40 @@ import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D.Double;
 
+/**
+ * The {@code ShapeFactory} class that generate various shapes.
+ *
+ * @author Nazar-2025
+ *
+ * @version 1.0
+ */
 public class ShapeFactory {
+   /**
+    * Drawing shape.
+    */
    public Shape shape;
+   /**
+    * Shape line thickness.
+    */
    public BasicStroke stroke = new BasicStroke(3.0F);
+   /**
+    * Color shape.
+    */
    public Paint paint;
+   /**
+    * Width of shape.
+    */
    public int width = 25;
+   /**
+    * Height of shape.
+    */
    public int height = 25;
 
+   /**
+    * Constructs {@code ShapeFactory} create shapes.
+    *
+    * @param shape_type generation shapes type argument.
+    */
    //Various shapes constructor
    public ShapeFactory(int shape_type) {
       switch(shape_type / 10) {
@@ -68,6 +95,14 @@ public class ShapeFactory {
 
    }
 
+   /**
+    * Return different shape depending on angles count.
+    *
+    * @param arms angles count argument.
+    * @param center shape center argument.
+    * @param rOuter outer`s angles argument.
+    * @param rInner inner`s angles argument.
+    */
    //Method that generates five-pointed star
    private static Shape createStar(int arms, Point center, double rOuter, double rInner) {
       double angle = 3.141592653589793D / (double)arms;
