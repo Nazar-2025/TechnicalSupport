@@ -4,6 +4,7 @@ import java.awt.GradientPaint;
 import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Shape;
+import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D.Double;
 
@@ -18,81 +19,116 @@ public class ShapeFactory {
    /**
     * Drawing shape.
     */
-   public Shape shape;
+   private Shape shape;
    /**
     * Shape line thickness.
     */
-   public BasicStroke stroke = new BasicStroke(3.0F);
+   private BasicStroke stroke = new BasicStroke(3.0F);
    /**
     * Color shape.
     */
-   public Paint paint;
+   private Paint paint;
    /**
     * Width of shape.
     */
-   public int width = 25;
+   public static final int WIDTH = 25;
    /**
     * Height of shape.
     */
-   public int height = 25;
+   public static final int HEIGHT = 25;
+
+   /**
+    * @return shape.
+    */
+   public Shape getShape(){
+      return shape;
+   }
+
+   /**
+    * @return shape line thickness.
+    */
+   public BasicStroke getStroke(){
+      return stroke;
+   }
+
+   /**
+    * @return shape color.
+    */
+   public Paint getPaint(){
+      return paint;
+   }
 
    /**
     * Constructs {@code ShapeFactory} create shapes.
     *
-    * @param shape_type generation shapes type argument.
+    * @param shapeForm generation shapes form type argument.
+    * @param shapeColor generation shapes color type argument.
     */
    //Various shapes constructor
-   public ShapeFactory(int shape_type) {
-      switch(shape_type / 10) {
-      case 1:
-         this.shape = createStar(3, new Point(0, 0), (double)this.width / 2.0D, (double)this.width / 2.0D);
-         break;
-      case 2:
-      case 4:
-      case 6:
-      case 8:
-      default:
-         throw new Error("type is nusupported");
-      case 3:
-         this.shape = createStar(5, new Point(0, 0), (double)this.width / 2.0D, (double)this.width / 4.0D);
-         break;
-      case 5:
-         this.shape = new Double((double)(-this.width) / 2.0D, (double)(-this.height) / 2.0D, (double)this.width, (double)this.height);
-         break;
-      case 7:
-         GeneralPath path = new GeneralPath();
-         double tmp_height = Math.sqrt(2.0D) / 2.0D * (double)this.height;
-         path.moveTo((double)(-this.width / 2), -tmp_height);
-         path.lineTo(0.0D, -tmp_height);
-         path.lineTo((double)(this.width / 2), tmp_height);
-         path.closePath();
-         this.shape = path;
-         break;
-      case 9:
-         this.shape = new java.awt.geom.Arc2D.Double((double)(-this.width) / 2.0D, (double)(-this.height) / 2.0D, (double)this.width, (double)this.height, 30.0D, 300.0D, 2);
-      }
+   public ShapeFactory(int shapeForm, int shapeColor) {
+      setFigureForm(shapeForm);
+      setFigureColor(shapeColor);
+   }
 
-      switch(shape_type % 10) {
-      case 1:
-         this.stroke = new BasicStroke(3.0F);
-         break;
-      case 2:
-      case 5:
-      case 6:
-      default:
-         throw new Error("type is nusupported");
-      case 3:
-         break;
-      case 4:
-         this.stroke = new BasicStroke(7.0F);
-         break;
-      case 7:
-         this.paint = new GradientPaint((float)(-this.width), (float)(-this.height), Color.white, (float)this.width, (float)this.height, Color.gray, true);
-         break;
-      case 8:
-         this.paint = Color.red;
+   /**
+    * Method that generate figure form.
+    *
+    * @param shapeType shapes form type argument.
+    */
+   //Generates figure form
+   private void setFigureForm(int shapeType){
+      switch(shapeType){
+         case 1:
+            this.shape = createStar(3, new Point(0, 0), WIDTH / 2.0D, WIDTH / 2.0D);
+            break;
+         case 3:
+            this.shape = createStar(5, new Point(0, 0), WIDTH / 2.0D, WIDTH / 4.0D);
+            break;
+         case 5:
+            this.shape = new Double((-WIDTH) / 2.0D, (-HEIGHT) / 2.0D, WIDTH, HEIGHT);
+            break;
+         case 7:
+            GeneralPath path = new GeneralPath();
+            double tmpHeight = Math.sqrt(2.0D) / 2.0D * HEIGHT;
+            path.moveTo((-WIDTH / 2D), -tmpHeight);
+            path.lineTo(0.0D, -tmpHeight);
+            path.lineTo((WIDTH / 2D), tmpHeight);
+            path.closePath();
+            this.shape = path;
+            break;
+         case 9:
+            this.shape = new java.awt.geom.Arc2D.Double((-WIDTH) / 2.0D, (-HEIGHT) / 2.0D, WIDTH, HEIGHT, 30.0D, 300.0D, Arc2D.PIE);
+            break;
+         default:
+            throw new IllegalArgumentException("Type is unsupported");
       }
+   }
 
+   /**
+    * Method that generate figure color.
+    *
+    * @param shapeColor shapes color type argument.
+    */
+   //Generates figure color
+   private void setFigureColor(int shapeColor){
+      switch(shapeColor) {
+         case 1:
+            this.stroke = new BasicStroke(3.0F);
+            break;
+         case 3:
+            break;
+         case 4:
+            this.stroke = new BasicStroke(7.0F);
+            break;
+         case 7:
+            this.paint = new GradientPaint(-WIDTH, -HEIGHT, Color.white, WIDTH, HEIGHT, Color.gray, true);
+            break;
+         case 8:
+            this.paint = Color.red;
+            break;
+         default:
+            throw new IllegalArgumentException("Type is unsupported");
+      }
    }
 
    /**
@@ -105,12 +141,12 @@ public class ShapeFactory {
     */
    //Method that generates five-pointed star
    private static Shape createStar(int arms, Point center, double rOuter, double rInner) {
-      double angle = 3.141592653589793D / (double)arms;
+      double angle = 3.141592653589793D / arms;
       GeneralPath path = new GeneralPath();
 
       for(int i = 0; i < 2 * arms; ++i) {
          double r = (i & 1) == 0 ? rOuter : rInner;
-         java.awt.geom.Point2D.Double p = new java.awt.geom.Point2D.Double((double)center.x + Math.cos((double)i * angle) * r, (double)center.y + Math.sin((double)i * angle) * r);
+         java.awt.geom.Point2D.Double p = new java.awt.geom.Point2D.Double(center.x + Math.cos(i * angle) * r, center.y + Math.sin(i * angle) * r);
          if (i == 0) {
             path.moveTo(p.getX(), p.getY());
          } else {

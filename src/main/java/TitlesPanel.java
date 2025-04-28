@@ -20,37 +20,36 @@ import javax.swing.Timer;
  * @version 1.0
  */
 public class TitlesPanel extends JPanel implements ActionListener {
-   /**
-    * Main panel graphics of user interface.
-    */
-   private Graphics2D g2d;
-   /**
-    * Redrawing process timer.
-    */
-   private Timer animation;
-   /**
+    /**
     * Indicator for redraw.
     */
-   private boolean is_done = true;
+   private boolean isDone = true;
    /**
     * Shape angle rotation.
     */
-   private int start_angle = 0;
+   private int startAngle = 0;
    /**
-    * Parameter which depends on shape form and color.
+    * Parameter which depends on shape form.
     */
-   private int shape;
+   private final int shapeForm;
+   /**
+    * Parameter which depends on shape color.
+    */
+   private final int shapeColor;
 
    /**
     * Constructs {@code TitlesPanel} set drawing shape and start animation.
     *
-    * @param _shape shape type argument.
+    * @param shapeForm shape type form argument.
+    * @param shapeColor shape type color argument.
     */
    //Start shape rotation animation constructor
-   public TitlesPanel(int _shape) {
-      this.shape = _shape;
-      (this.animation = new Timer(50, this)).setInitialDelay(50);
-      this.animation.start();
+   public TitlesPanel(int shapeForm, int shapeColor) {
+      this.shapeForm = shapeForm;
+      this.shapeColor = shapeColor;
+      Timer animation = new Timer(50, this);
+      animation.setInitialDelay(50);
+      animation.start();
    }
 
    /**
@@ -59,10 +58,9 @@ public class TitlesPanel extends JPanel implements ActionListener {
     */
    //Repaint rotation shape
    public void actionPerformed(ActionEvent arg0) {
-      if (this.is_done) {
+      if (this.isDone) {
          this.repaint();
       }
-
    }
 
    /**
@@ -71,33 +69,34 @@ public class TitlesPanel extends JPanel implements ActionListener {
     */
    //Drawing various shape method
    private void doDrawing(Graphics g) {
-      this.is_done = false;
-      (this.g2d = (Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      this.isDone = false;
+      Graphics2D g2d = (Graphics2D)g;
+      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
       Dimension size = this.getSize();
       Insets insets = this.getInsets();
       int w = size.width - insets.left - insets.right;
       int h = size.height - insets.top - insets.bottom;
-      ShapeFactory shape = new ShapeFactory(this.shape);
-      this.g2d.setStroke(shape.stroke);
-      this.g2d.setPaint(shape.paint);
-      double angle = (double)(this.start_angle++);
-      if (this.start_angle > 360) {
-         this.start_angle = 0;
+      ShapeFactory shape = new ShapeFactory(shapeForm, shapeColor);
+      g2d.setStroke(shape.getStroke());
+      g2d.setPaint(shape.getPaint());
+      double angle = (this.startAngle++);
+      if (this.startAngle > 360) {
+         this.startAngle = 0;
       }
 
-      double dr = 90.0D / ((double)w / ((double)shape.width * 1.5D));
+      double dr = 90.0D / (w / (ShapeFactory.WIDTH * 1.5D));
 
-      for(int j = shape.height; j < h; j += (int)((double)shape.height * 1.5D)) {
-         for(int i = shape.width; i < w; i += (int)((double)shape.width * 1.5D)) {
+      for(int j = ShapeFactory.WIDTH; j < h; j += (int)(ShapeFactory.HEIGHT * 1.5D)) {
+         for(int i = ShapeFactory.WIDTH; i < w; i += (int)(ShapeFactory.WIDTH * 1.5D)) {
             angle = angle > 360.0D ? 0.0D : angle + dr;
             AffineTransform transform = new AffineTransform();
-            transform.translate((double)i, (double)j);
+            transform.translate(i, j);
             transform.rotate(Math.toRadians(angle));
-            this.g2d.draw(transform.createTransformedShape(shape.shape));
+            g2d.draw(transform.createTransformedShape(shape.getShape()));
          }
       }
 
-      this.is_done = true;
+      this.isDone = true;
    }
 
    /**
@@ -105,6 +104,7 @@ public class TitlesPanel extends JPanel implements ActionListener {
     * @param g graphic for {@code doDrawing} method.
     */
    //Method that start drawing shape process
+   @Override
    public void paintComponent(Graphics g) {
       super.paintComponent(g);
       this.doDrawing(g);
